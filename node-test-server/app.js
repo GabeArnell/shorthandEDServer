@@ -18,7 +18,8 @@ var server = http.createServer(function(req, res){
       break
     case "/favicon.ico":
       console.log("SEARCHING FOR FAVICON");
-
+      res.writeHead(200,{'Content-Type': 'image/x-icon'});
+      fs.createReadStream(__dirname + '/public/favicon.ico').pipe(res);
       break
     default:
       console.log('searching for filepath: ' + filePath);
