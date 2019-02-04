@@ -12,26 +12,9 @@ divStudentProfile.style.display = "none";
 divEmojiBoard.style.display = "block";
 divStudentBoard.style.display = "block";
 
-//Connections
-var dataRequest = new XMLHttpRequest();
-
-dataRequest.open('GET','/api.json',true);
 var testStudentAlphaArray;
-var RegisteredStudents = [];
-
-
-
-
-dataRequest.send();
-
-
-var ClassDataArray = {
-	name:"Test Class",
-	studentids:[1],
-	classid:1,
-};
-
-var RegisteredClasses = [ClassDataArray];
+var RegisteredStudents;
+var RegisteredClasses;
 
 
 // Emoji Properties
@@ -63,15 +46,21 @@ function loadEmojiLog(student,classid,contentElement,date,displaytype,){
 	let loggedEmojis = [];
 
 	let classArray;
+
 	// identifying which class is the emoji
+	console.log(student.classes.length);
 	for (let i = 0; i < student.classes.length;i++){
 		let itteratingClassArray = student.classes[i];
 		if (itteratingClassArray.classid == classid) {
 			classArray = itteratingClassArray;
+			console.log('found matching class');
 			break;
+		}else{
+			console.log('Missmatch: '+classid+' - '+ itteratingClassArray.classid);
 		}
 
 	}
+
 
 	//Taking emojis from the class and adding them to the list if they match the date in reverse order
 	for (let i = 0; i < classArray.emojis.length;i++){
@@ -121,9 +110,7 @@ function returnDateString(){
 	if(mm<10) {
 		mm = '0'+mm
 	}
-
 	today = mm + '/' + dd + '/' + yyyy;
-
 	return(today);
 }
 
@@ -249,7 +236,6 @@ function loadClass(currentClassId){
 	var currentStudentIcons = [];
 	function loadclassboard(classarray){
 
-
 		//reseting the current data arrays
 		currentStudentIcons = [];
 		currentStudents = [];
@@ -335,7 +321,7 @@ function loadClass(currentClassId){
 	}
 
 	// Loading the fake class data
-	loadclassboard(ClassDataArray);
+	loadclassboard(RegisteredClasses[currentClassId]);
 
 	function giveEmojiToStudent(studenttile,emojiname){
 
@@ -472,16 +458,19 @@ function loadClass(currentClassId){
 
 
 }
-
+var dataRequest = new XMLHttpRequest();
 
 dataRequest.onload = function () {
 
   // Begin accessing JSON data here
-  testStudentAlphaArray = JSON.parse(this.response);
-
-  RegisteredStudents.push(testStudentAlphaArray);
-  loadClass(1);
+  let responseData = JSON.parse(this.response);
+	RegisteredStudents = responseData[0];
+	RegisteredClasses = responseData[1];
+  loadClass(0);
   console.log('Parsed and loaded server data');
 };
+var myName = prompt('Enter test username');
 
+dataRequest.open('GET','/api/createNewUserData-'+myName,true);
+dataRequest.send();
 console.log('Loaded client set up');
