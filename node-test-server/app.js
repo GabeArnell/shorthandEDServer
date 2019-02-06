@@ -9,16 +9,14 @@ node C:\Users\gabrielarnell\node-test-server\app.js
 
 var testStr = '/api/createNewUserData-mike';
 
-
-
 function returnDefaultData(name){
-	var ClassDataObj = {
+	var testClass = {
 		name:"Test Class",
 		studentids:[1],
-		classid:1,
+		classid:0,
 	};
 	var nestedClassDataForStudent = {
-		classid: 1,
+		classid: 0,
 		emojis:[],
 	};
 
@@ -29,7 +27,7 @@ function returnDefaultData(name){
 	};
 
 	let RegisteredStudents = [testStudentAlphaArray];
-	let RegisteredClasses = [ClassDataObj,];
+	let RegisteredClasses = [testClass];
 
 	return([RegisteredStudents, RegisteredClasses]);
 }
@@ -51,7 +49,6 @@ function createNewUserData(name){
 	fs.mkdirSync(dataFolderName);
 	var newDefaultData =  returnDefaultData(name);
 	var RegisteredStudents = newDefaultData[0], RegisteredClasses = newDefaultData[1];
-
 	// Creating sub directories for data and profile information of user
 
 	fs.mkdirSync(dataFolderName+'/data');
@@ -60,14 +57,13 @@ function createNewUserData(name){
 	var strRegStudents = JSON.stringify(RegisteredStudents);
 	var strRegClasses = JSON.stringify(RegisteredClasses);
 
-	console.log(strRegClasses);
 
 	fs.appendFile(dataFolderName +'/data' + '/RegisteredStudents.txt', strRegStudents, function (err) {
 	  if (err) throw err;
 	  console.log('Saved RegisteredStudents');
 	});
 
-	fs.appendFile(dataFolderName +'/data' + '/RegisteredClasses.txt', RegisteredClasses, function (err) {
+	fs.appendFile(dataFolderName +'/data' + '/RegisteredClasses.txt', strRegClasses, function (err) {
 		if (err) throw err;
 		console.log('Saved RegisteredClasses');
 	});
@@ -78,21 +74,63 @@ function createNewUserData(name){
 }
 
 
+function giveStudentEmoji(datapacket){
+ 	datapacket = decodeURIComponent(datapacket);
+	datapacket = JSON.parse(datapacket);
 
+	let dataPath = __dirname+'/data'+'/'+datapacket.username+'/data/RegisteredStudents.txt';
+	if (fs.existsSync(dataPath)){
+		var strRegStudents = fs.readFileSync(__dirname+'/data'+'/'+datapacket.username+'/data/RegisteredStudents.txt');
+		var jsonRegStudents = JSON.parse(strRegStudents);
+
+		var targetStudent;
+		for (let i =0;i<jsonRegStudents.length;i++){
+			let indexedStudent = jsonRegStudents[i];
+			if (indexedStudent.id === datapacket.studentid){
+				targetStudent = indexedStudent;
+			}
+		}
+
+		if(targetStudent != null){
+			for (let i =0;i<targetStudent.classes.length;i++){
+				let indexedClass = targetStudent.classes[i];
+				if (indexedClass.classid === datapacket.classid){
+					targetStudent.classes[i].emojis.push(datapacket.emojidata);
+
+					// Writing new data to
+					fs.writeFile(dataPath, JSON.stringify(jsonRegStudents), function(err) {
+				    if(err) {
+				        return console.log(err);
+				    }
+
+						return({result: 'success'});
+				});
+
+				return({result: 'failure'});
+				}
+			}
+		}
+		return({result: 'failure'});
+	}else{
+		return({result: 'failure'});
+	}
+
+}
 
 function runAPIRequest(apiRequest){
 	console.log('received: ' + apiRequest);
 	if (apiRequest.substring(0,18) ==='createNewUserData-'){
 		return(createNewUserData(apiRequest.substring(18,apiRequest.length)));
-
+	}
+	if (apiRequest.substring(0,19) ==='pushEmojiToStudent-'){
+		return(giveStudentEmoji(apiRequest.substring(19,apiRequest.length)));
 	}
 }
 
 
 //runAPIRequest((testStr.substring(5,testStr.length)));
 
-
-
+decodeURIComponent
 var server = http.createServer(function(req, res){
   console.log('Request was made: ' + req.url);
   //API Check, responseData always JSON
@@ -101,7 +139,7 @@ var server = http.createServer(function(req, res){
 		res.writeHead(200,{'Content-Type': 'text/plain'});
 		res.write(JSON.stringify(responseData));
 		res.end();
-  };
+  }
   // Returning static web pages/files
 
   let filePath = __dirname+'/public'+req.url;

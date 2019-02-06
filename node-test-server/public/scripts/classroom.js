@@ -15,7 +15,7 @@ divStudentBoard.style.display = "block";
 var testStudentAlphaArray;
 var RegisteredStudents;
 var RegisteredClasses;
-
+var hasLoadedData = false;
 
 // Emoji Properties
 var emojitilesize = "80";
@@ -57,8 +57,8 @@ function loadEmojiLog(student,classid,contentElement,date,displaytype,){
 			break;
 		}else{
 			console.log('Missmatch: '+classid+' - '+ itteratingClassArray.classid);
+			console.log("Failed to match class: "+ itteratingClassArray);
 		}
-
 	}
 
 
@@ -66,6 +66,8 @@ function loadEmojiLog(student,classid,contentElement,date,displaytype,){
 	for (let i = 0; i < classArray.emojis.length;i++){
 		if (classArray.emojis[i].timestamp == date){
 			loggedEmojis.push(classArray.emojis[i]);
+		}else{
+			console.log('no match')
 		}
 	}
 
@@ -197,6 +199,9 @@ function createStudentData(name,givenClassId){
 // Adding new student
 //createStudentData("Bert",1);
 
+
+
+
 // LOADS IN THE CLASSES
 function loadClass(currentClassId){
 
@@ -230,97 +235,117 @@ function loadClass(currentClassId){
 		}
 	}
 
-	// Main sequencer, grabs student data from the id in the class array then creates icons for each student
-
-	var currentStudents = [];
-	var currentStudentIcons = [];
-	function loadclassboard(classarray){
-
-		//reseting the current data arrays
-		currentStudentIcons = [];
-		currentStudents = [];
-
-		console.log('Loading in '+classarray.name);
-		// Gathering list of students
-		for (let i = 0; i<classarray.studentids.length; i++){
-			let currentStudent = returnStudentData(classarray.studentids[i]);
-			if (currentStudent) {
-				currentStudents.push(currentStudent);
-				console.log('Confirmed '+currentStudent.name);
+	function sendEmojiPushToServer(studentid,classid, emojidatapacket){
+		var emojiPushRequest = new XMLHttpRequest();
+		emojiPushRequest.onload = function () {
+		  // Begin accessing JSON data here
+		  let responseData = JSON.parse(this.response);
+			if (responseData.result == "success"){
+				console.log("Recieved successful data transfer from server!");
 			}
+
+		};
+
+		var dataPacket = {
+			username: myName,
+			studentid: studentid,
+			classid:classid,
+			emojidata: emojidatapacket,
 		}
-		console.log(currentStudents.length+" student(s) in class");
-
-		// Adding icons for each student
-		for (let i = 0; i < currentStudents.length; i++){
-
-			let studentIcon = document.createElement('div');
-
-			// setting properties
-			studentIcon.style.width = studenttilesize+"px";
-			studentIcon.style.height = studenttilesize+"px";
-			studentIcon.style.position = "absolute";
-			studentIcon.style.borderRadius = '50%';
-
-			studentIcon.style.zIndex = '1';
-
-
-			// Adding background properties
-			let imagefile = 'url("images/studentdefaulticon.png")';
-
-			studentIcon.style.backgroundImage = imagefile;
-			studentIcon.style.backgroundSize = studenttilesize+'px '+studenttilesize+'px';
-
-			// Adding name label
-			/*var namelabel = document.createElement('p')
-			namelabel.innerHTML = currentStudents[i].name;
-
-			studentIcon.appendChild(namelabel);*/
-
-			// Adding div to the student board and pushing it to current array
-			divStudentBoard.appendChild(studentIcon);
-			console.log("Added "+currentStudents[i].name+"'s tile");
-			currentStudentIcons.push(studentIcon);
-
-
-			// Adding hover property
-			// Creating an invisible division that is above both the emoji and the basic div
-			let snapDiv = document.createElement('div');
-			snapDiv.style.width = studenttilesize+"px";
-			snapDiv.style.height = studenttilesize+"px";
-			snapDiv.style.position = "absolute";
-			snapDiv.style.borderRadius = '50%';
-			snapDiv.style.backgroundColor = "red";
-			snapDiv.style.zIndex = "3";
-			snapDiv.style.opacity = "0";
-
-			divStudentBoard.appendChild(snapDiv);
-
-			// Adding properties
-			studentIcon.mousehover = false;
-			studentIcon.student = currentStudents[i];
-
-
-			snapDiv.addEventListener('mouseenter', function(event) {
-				studentIcon.mousehover = true;
-			}, true);
-			snapDiv.addEventListener('mouseout', function(event) {
-				studentIcon.mousehover = false;
-			}, true);
-
-			// Moving the icons to be a list
-			studentIcon.style.left = ((studenttilesize)*i+(i*studenttilepadding)+(studenttilepadding/2))+'px';
-			snapDiv.style.left = ((studenttilesize)*i+(i*studenttilepadding)+(studenttilepadding/2))+'px';
-
-			snapDiv.addEventListener('mousedown', function(event) {
-				loadStudentProfileUI(studentIcon.student,currentClassId);
-			}, true);
-
-		}
-
+		emojiPushRequest.open('GET','/api/pushEmojiToStudent-'+JSON.stringify(dataPacket),true);
+		emojiPushRequest.send();
 	}
 
-	// Loading the fake class data
+		// Main sequencer, grabs student data from the id in the class array then creates icons for each student
+
+		var currentStudents = [];
+		var currentStudentIcons = [];
+		function loadclassboard(classarray){
+
+			//reseting the current data arrays
+			currentStudentIcons = [];
+			currentStudents = [];
+
+			console.log('Loading in '+classarray.name);
+			// Gathering list of students
+			for (let i = 0; i<classarray.studentids.length; i++){
+				let currentStudent = returnStudentData(classarray.studentids[i]);
+				if (currentStudent) {
+					currentStudents.push(currentStudent);
+					console.log('Confirmed '+currentStudent.name);
+				}
+			}
+			console.log(currentStudents.length+" student(s) in class");
+
+			// Adding icons for each student
+			for (let i = 0; i < currentStudents.length; i++){
+
+				let studentIcon = document.createElement('div');
+
+				// setting properties
+				studentIcon.style.width = studenttilesize+"px";
+				studentIcon.style.height = studenttilesize+"px";
+				studentIcon.style.position = "absolute";
+				studentIcon.style.borderRadius = '50%';
+
+				studentIcon.style.zIndex = '1';
+
+
+				// Adding background properties
+				let imagefile = 'url("images/studentdefaulticon.png")';
+
+				studentIcon.style.backgroundImage = imagefile;
+				studentIcon.style.backgroundSize = studenttilesize+'px '+studenttilesize+'px';
+
+				// Adding name label
+				/*var namelabel = document.createElement('p')
+				namelabel.innerHTML = currentStudents[i].name;
+
+				studentIcon.appendChild(namelabel);*/
+
+				// Adding div to the student board and pushing it to current array
+				divStudentBoard.appendChild(studentIcon);
+				console.log("Added "+currentStudents[i].name+"'s tile");
+				currentStudentIcons.push(studentIcon);
+
+
+				// Adding hover property
+				// Creating an invisible division that is above both the emoji and the basic div
+				let snapDiv = document.createElement('div');
+				snapDiv.style.width = studenttilesize+"px";
+				snapDiv.style.height = studenttilesize+"px";
+				snapDiv.style.position = "absolute";
+				snapDiv.style.borderRadius = '50%';
+				snapDiv.style.backgroundColor = "red";
+				snapDiv.style.zIndex = "3";
+				snapDiv.style.opacity = "0";
+
+				divStudentBoard.appendChild(snapDiv);
+
+				// Adding properties
+				studentIcon.mousehover = false;
+				studentIcon.student = currentStudents[i];
+
+
+				snapDiv.addEventListener('mouseenter', function(event) {
+					studentIcon.mousehover = true;
+				}, true);
+				snapDiv.addEventListener('mouseout', function(event) {
+					studentIcon.mousehover = false;
+				}, true);
+
+				// Moving the icons to be a list
+				studentIcon.style.left = ((studenttilesize)*i+(i*studenttilepadding)+(studenttilepadding/2))+'px';
+				snapDiv.style.left = ((studenttilesize)*i+(i*studenttilepadding)+(studenttilepadding/2))+'px';
+
+				snapDiv.addEventListener('mousedown', function(event) {
+					loadStudentProfileUI(studentIcon.student,currentClassId);
+				}, true);
+
+			}
+
+		}
+
 	loadclassboard(RegisteredClasses[currentClassId]);
 
 	function giveEmojiToStudent(studenttile,emojiname){
@@ -350,10 +375,12 @@ function loadClass(currentClassId){
 				var emojiDataSet = {
 					emoji: emojiname,
 					timestamp: today,
-
 				};
 
 				classesArray[i].emojis.push(emojiDataSet);
+
+
+				sendEmojiPushToServer(studentData.id,currentClassId,emojiDataSet);
 				console.log("Gave "+studentData.name+" a "+emojiname+" emoji!");
 
 			}
@@ -455,22 +482,21 @@ function loadClass(currentClassId){
 		}, true);
 
 	}
-
-
 }
-var dataRequest = new XMLHttpRequest();
 
-dataRequest.onload = function () {
-
+var initialDataRequest = new XMLHttpRequest();
+initialDataRequest.onload = function () {
   // Begin accessing JSON data here
   let responseData = JSON.parse(this.response);
-	RegisteredStudents = responseData[0];
+	RegisteredStudents = (responseData[0]);
 	RegisteredClasses = responseData[1];
+	console.log(RegisteredClasses);
   loadClass(0);
   console.log('Parsed and loaded server data');
+	hasLoadedData = true;
 };
 var myName = prompt('Enter test username');
 
-dataRequest.open('GET','/api/createNewUserData-'+myName,true);
-dataRequest.send();
+initialDataRequest.open('GET','/api/createNewUserData-'+myName,true);
+initialDataRequest.send();
 console.log('Loaded client set up');
