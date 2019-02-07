@@ -166,19 +166,16 @@ studentProfileExitButton.addEventListener('mousedown', function(e) {
 }, true);
 
 
-// Function to create student data
+// Function to create student data NOT BEING USED,
 function createStudentData(name,givenClassId){
-
-
 	// givenClassId is the id of the class the student profile was created for
 	console.log('Creating '+name+"'s data");
 	var newStudentData = {
-
 		name: name,
 		id: (RegisteredStudents.length+1),
 		classes: [],
 	};
-	if (givenClassId){
+	if (givenClassId != null){
 		// If give created in a class screen, the students data will have the class data
 		let newClassData = {
 			classid: givenClassId,

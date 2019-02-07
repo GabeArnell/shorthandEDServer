@@ -7,8 +7,6 @@ node C:\Users\gabrielarnell\node-test-server\app.js
 */
 
 
-var testStr = '/api/createNewUserData-mike';
-
 function returnDefaultData(name){
 	var testClass = {
 		name:"Test Class",
@@ -73,7 +71,6 @@ function createNewUserData(name){
 
 }
 
-
 function giveStudentEmoji(datapacket){
  	datapacket = decodeURIComponent(datapacket);
 	datapacket = JSON.parse(datapacket);
@@ -128,9 +125,6 @@ function runAPIRequest(apiRequest){
 }
 
 
-//runAPIRequest((testStr.substring(5,testStr.length)));
-
-decodeURIComponent
 var server = http.createServer(function(req, res){
   console.log('Request was made: ' + req.url);
   //API Check, responseData always JSON
@@ -140,8 +134,8 @@ var server = http.createServer(function(req, res){
 		res.write(JSON.stringify(responseData));
 		res.end();
   }
-  // Returning static web pages/files
 
+  // Returning static web pages/files
   let filePath = __dirname+'/public'+req.url;
   switch (req.url) {
     case "/":
@@ -176,6 +170,6 @@ var server = http.createServer(function(req, res){
 });
 
 
-server.listen(3000, '127.0.0.1');
+server.listen(80, '127.0.0.1');
 
-console.log('Opened port: 3000');
+console.log('Opened port: 80');
