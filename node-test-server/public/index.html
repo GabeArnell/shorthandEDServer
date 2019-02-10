@@ -5,33 +5,119 @@
 		<meta name="author" content = "Gabriel Arnelll">
 		<meta name="description" content = "Proof of concept for data abstration in reguards to class array.">
 
+		<meta name="google-signin-scope" content="profile email">
+		<meta name="google-signin-client_id" content="753520847053-krqnpchv1nqlktic8pk8sd7kkk8rg1fc.apps.googleusercontent.com">
+		<script src="https://apis.google.com/js/platform.js" async defer></script>
 
-		<!-- CSS LINKS-->
-		<link href="styles/style.css" rel="stylesheet" type="text/css">
 
-		<!-- Visuals -->
-		<title>shorthandED</title>
-		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+			<!-- CSS LINKS-->
+			<link href="https://fonts.googleapis.com/css?family=Saira+Extra+Condensed" rel="stylesheet">
 
+			<link href="styles/style.css" rel="stylesheet" type="text/css">
+			<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+			<!-- Visuals -->
+			<title>shorthandED</title>
+			<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+			<link rel="stylesheet" href="https://unpkg.com/material-components-web/dist/material-components-web.min.css">
+			<script src="https://unpkg.com/material-components-web/dist/material-components-web.min.js"></script>
 	</head>
-	<body>
-		<!-- Emojis Div; main.js will instert the emojis here -->
-		<div id="emojiboarddiv"></div>
-
-		<div id = "studentboarddiv"></div>
-
-		<div id = "studentprofilediv">
-
-			<button type = "button" id = "profileexitbutton" > Class </button>
-
-			<img src = "images/studentdefaulticon.png" id = "studentprofileimage">
-			<p id = "studentprofiletitle">Firstname LastName</p>
-
-			<div id = "emojilogdiv"></div>
-
-
+	<body style="margin: 0px">
+		<body style="margin: 0px">
+	<header class="mdc-top-app-bar" id="barup">
+		<div class="mdc-top-app-bar__row">
+			<section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+				<span class="mdc-top-app-bar__title">ShorthandED</span>
+			</section>
 		</div>
+	</header>
+	<header class="mdc-top-app-bar">
+		<div class="mdc-top-app-bar__row">
+			<section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+				<span class="mdc-top-app-bar__title">ShorthandED</span>
+			</section>
+		</div>
+	</header>
+	<aside class="mdc-drawer">
+		<div class="mdc-drawer__header">
+			<div id="loggedin">
+				<img src="images/studentdefaulticon.png" id="teachericon" onclick="logout()">
+				<h3 class="mdc-drawer__title">Professor Michael</h3>
+				<h6 class="mdc-drawer__subtitle">The Mirabito Institute of Technology</h6>
+			</div>
+			<div id="loggedout">
+				<div class="g-signin2" data-onsuccess="onSignIn"></div>
+						<script>
+							function onSignIn(googleUser) {
+								// Useful data for your client-side scripts:
+								var profile = googleUser.getBasicProfile();
+								console.log("ID: " + profile.getId()); // Don't send this directly to your server!
+								console.log('Full Name: ' + profile.getName());
+								console.log('Given Name: ' + profile.getGivenName());
+								console.log('Family Name: ' + profile.getFamilyName());
+								console.log("Image URL: " + profile.getImageUrl());
+								console.log("Email: " + profile.getEmail());
 
+								// The ID token you need to pass to your backend:
+								var id_token = googleUser.getAuthResponse().id_token;
+								console.log("ID Token: " + id_token);
+							}
+						</script>
+			</div>
+		</div>
+		<div class="mdc-drawer__content">
+			<nav class="mdc-list">
+				<a class="mdc-list-item mdc-list-item--activated" href="index.html" aria-selected="true">
+					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">inbox</i>
+					<span class="mdc-list-item__text">Home</span>
+				</a>
+				<a class="mdc-list-item" href="classesindex.html">
+					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">send</i>
+					<span class="mdc-list-item__text">Classes</span>
+				</a>
+				<a class="mdc-list-item" href="#">
+					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">drafts</i>
+					<span class="mdc-list-item__text">Statistics</span>
+				</a>
+			</nav>
+		</div>
+	</aside>
+	<script>
+	function loginout() {
+		if (localStorage.getItem('logged') == 'yes') {
+			document.getElementById('loggedout').style.display = "none";
+			document.getElementById('loggedin').style.display = "block";
+		}
+
+	}
+</script>
+<script>
+	function logout() {
+		localStorage.setItem('logged', "no")
+		document.getElementById('loggedout').style.display = "block";
+		document.getElementById('loggedin').style.display = "none";
+		alert("logged out")
+
+	}
+	</script>
+		<!-- Emojis Div; main.js will instert the emojis here -->
+		<div id="emojo">
+			<div id="alphamoji">
+				<div id="emojiboarddiv"></div>
+			</div>
+			<div id="studentboarddiv"></div>
+
+			<div id="studentprofilediv">
+
+				<button type="button" id="profileexitbutton"> Class </button>
+
+				<img src="images/studentdefaulticon.png" id="studentprofileimage">
+				<p id="studentprofiletitle">Firstname LastName</p>
+
+				<div id="emojilogdiv"></div>
+
+
+			</div>
+		</div>
 		<!-- loading the control script -->
 		<script src="scripts/classroom.js"></script>
 

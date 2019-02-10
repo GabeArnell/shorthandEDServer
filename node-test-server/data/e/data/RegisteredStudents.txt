@@ -1,0 +1,1 @@
+[{"name":"Albert","id":1,"classes":[{"classid":0,"emojis":[{"emoji":"smile","timestamp":"02/10/2019"},{"emoji":"sad","timestamp":"02/10/2019"},{"emoji":"annoyed","timestamp":"02/10/2019"}]}]}]

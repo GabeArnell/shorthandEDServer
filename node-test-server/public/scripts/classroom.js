@@ -445,8 +445,8 @@ function loadClass(currentClassId){
 				x : event.clientX,
 				y : event.clientY
 			};
-			item.style.left = (mousePosition.x -(emojitilesize/2)) + 'px';
-			item.style.top  = (mousePosition.y -(emojitilesize/2)) +'px';
+			item.style.left = (mousePosition.x -256 -(emojitilesize/2)) + 'px';
+			item.style.top  = (mousePosition.y -64 - (emojitilesize/2)) +'px';
 		}, true);
 
 		document.addEventListener('mouseup', function(event) {
@@ -473,8 +473,8 @@ function loadClass(currentClassId){
 					x : event.clientX,
 					y : event.clientY
 				};
-				item.style.left = (mousePosition.x -(emojitilesize/2)) + 'px';
-				item.style.top  = (mousePosition.y -(emojitilesize/2)) +'px';
+				item.style.left = (mousePosition.x -256-(emojitilesize/2)) + 'px';
+				item.style.top  = (mousePosition.y -64-(emojitilesize/2)) +'px';
 			}
 		}, true);
 

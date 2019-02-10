@@ -1,0 +1,128 @@
+$mdc-theme-primary: #2196F3;
+$mdc-theme-secondary: #03A9F4;
+$mdc-theme-on-primary: #FFFFFF;
+$mdc-theme-on-secondary: #FFFFFF;
+
+@import "@material/button/mdc-button";
+@import "@material/drawer/mdc-drawer";
+@import "@material/list/mdc-list";
+@import "@material/top-app-bar/mdc-top-app-bar";
+@import "@material/card/mdc-card";
+
+.foo-button {
+	@include mdc-button-ink-color(#14c7ba);
+	@include mdc-states(teal);
+}
+
+html {
+	background-color: #fcfcfc;
+	font-size: 14px;
+	font-family: 'Roboto', sans-serif;
+	color: #00000099;
+}
+
+
+#menuopenicon {}
+
+
+.mdc-drawer {
+	padding-top: 128px;
+	z-index: 6;
+	mdc-elevation--z: 16;
+}
+
+.studentcard {
+	margin-top: 100px;
+	margin-left: 100px;
+	height: 382px;
+	width: 344px;
+}
+
+body {
+	display: flex;
+	height: 100vh;
+}
+
+.mdc-drawer-app-content {
+	flex: auto;
+	overflow: auto;
+}
+
+.main-content {
+	overflow: auto;
+	height: 100%;
+}
+
+.app-bar {
+	position: absolute;
+}
+
+.studentprofileimage {
+	width: 344px;
+	height: 344px;
+	margin: auto;
+}
+
+.Studentname {
+	padding-bottom: 16px;
+}
+
+h1 {
+	padding-top: 23px;
+	padding-left: 88px;
+	color: #000000de;
+	font-size: 20px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+h2 {
+	margin-top: 0px;
+	margin-bottom: 0px;
+	border-top-width: 22px;
+	padding-top: 12px;
+	padding-left: 88px;
+	color: #00000099;
+	font-size: 14px;
+}
+
+.gremlin {
+	border-radius: 50%;
+	width: 51px;
+	position: absolute;
+	margin-top: 20px;
+	margin-left: 16px;
+}
+
+.mdc-card__media--square::before {
+	margin-top: 0;
+}
+
+.studentcardtext {
+	padding-top: 28px;
+	padding-left: 16px;
+	padding-bottom: 24px;
+}
+
+.mdc-top-app-bar {
+	mdc-elevation--z: 16;
+	z-index: 7;
+}
+
+#emojiboarddiv {
+	position: absolute;
+	width: 100%;
+	height: 80px;
+	top: 64px;
+}
+
+#studentboarddiv {
+	position: absolute;
+	width: 100%;
+	height: 90%;
+	top: 144px;
+}
+
+#emojo {
+	margin-top: 64;
+}
