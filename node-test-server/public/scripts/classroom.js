@@ -494,6 +494,6 @@ initialDataRequest.onload = function () {
 };
 var myName = prompt('Enter test username');
 
-initialDataRequest.open('GET','/api/createNewUserData-'+myName,true);
+initialDataRequest.open("GET","/api/createNewUserData-"+myName,true);
 initialDataRequest.send();
 console.log('Loaded client set up');
