@@ -1,16 +1,18 @@
 const http = require("http");
 const fs = require("fs-extra");
 const path = require("path");
+const maximumClassesPerUser = 25;
+const maximumStudentsPerUser = 100;
 
 /*
-node C:\Users\gabrielarnell\node-test-server\app.js
+node C:\Users\gabrielarnell\Downloads\shorthandEDServer-master\shorthandEDServer-master\node-test-server
 */
 
 
 function returnDefaultData(name){
 	var testClass = {
 		name:"Test Class",
-		studentids:[1],
+		studentids:[0],
 		classid:0,
 	};
 	var nestedClassDataForStudent = {
@@ -20,7 +22,7 @@ function returnDefaultData(name){
 
 	var testStudentAlphaArray = {
 		name:"Albert",
-		id:1,
+		id:0,
 		classes:[nestedClassDataForStudent]
 	};
 
@@ -35,12 +37,18 @@ function returnDefaultData(name){
 function createNewUserData(name){
 	console.log("CREATING NEW DATA FOR: "+name);
 
-	let dataPath = __dirname+"/data";
-	let dataFolderName = dataPath+"/"+name;
+	let dataFolderName = 	 __dirname+"/data"+"/"+name;
 	if (fs.existsSync(dataFolderName)){
-		console.log("DATA ALREADY EXISTS");
-		fs.removeSync(dataFolderName);
-		console.log("Removed previous data folder");
+		console.log("Data already exists; returning current data");
+		//fs.removeSync(dataFolderName);
+		var strRegStudents = fs.readFileSync(dataFolderName+"/data/RegisteredStudents.txt");
+		var jsonRegStudents = JSON.parse(strRegStudents);
+
+		var strRegClasses = fs.readFileSync(dataFolderName+"/data/RegisteredClasses.txt");
+		var jsonRegClasses = JSON.parse(strRegClasses);
+		console.log('returning old data');
+
+		return([jsonRegStudents,jsonRegClasses]);
 	};
 
 	console.log("Making new folder");
@@ -56,12 +64,12 @@ function createNewUserData(name){
 	var strRegClasses = JSON.stringify(RegisteredClasses);
 
 
-	fs.appendFile(dataFolderName +"/data" + "/RegisteredStudents.txt", strRegStudents, function (err) {
+	fs.appendFileSync(dataFolderName +"/data" + "/RegisteredStudents.txt", strRegStudents, function (err) {
 	  if (err) throw err;
 	  console.log("Saved RegisteredStudents");
 	});
 
-	fs.appendFile(dataFolderName +"/data" + "/RegisteredClasses.txt", strRegClasses, function (err) {
+	fs.appendFileSync(dataFolderName +"/data" + "/RegisteredClasses.txt", strRegClasses, function (err) {
 		if (err) throw err;
 		console.log("Saved RegisteredClasses");
 	});
@@ -95,7 +103,7 @@ function giveStudentEmoji(datapacket){
 					targetStudent.classes[i].emojis.push(datapacket.emojidata);
 
 					// Writing new data to
-					fs.writeFile(dataPath, JSON.stringify(jsonRegStudents), function(err) {
+					fs.writeFileSync(dataPath, JSON.stringify(jsonRegStudents), function(err) {
 				    if(err) {
 				        return console.log(err);
 				    }
@@ -114,10 +122,147 @@ function giveStudentEmoji(datapacket){
 
 }
 
+function createStudentData(datapacket){
+	/* Datapacket format
+	{
+		name: string,
+		studentname: string,
+		classes: [int classId,int classId...],
+	}
+	classes can be empty
+	*/
+	datapacket = decodeURIComponent(datapacket);
+	datapacket = JSON.parse(datapacket);
+	let dataFolderName = 	 __dirname+"/data"+"/"+datapacket.name;
+	if (fs.existsSync(dataFolderName+"/data/RegisteredStudents.txt")){
+		var strRegStudents = fs.readFileSync(dataFolderName+"/data/RegisteredStudents.txt");
+	 	var jsonRegStudents = JSON.parse(strRegStudents);
+		if (jsonRegClasses.length >= maximumClassesPerUser){
+			return({result: "failure", msg: "Too many students"});
+		}
+		var studentData = {
+			name: datapacket.studentname,
+			id: jsonRegStudents.length,
+			classes: [],
+		}
+		// Adding nestedClassData in students if any were there
+		for (let i = 0; i< datapacket.classes.length; i++){
+			var nestedClassData = {
+				classid: datapacket.classes[i],
+				emojis: []
+			}
+			studentData.classes.push(nestedClassData);
+		}
+		// Saving New Student Directory Data
+		jsonRegStudents.push(studentData);
+		strRegStudents = JSON.stringify(jsonRegStudents);
+
+
+		fs.writeFileSync(dataFolderName +"/data" + "/RegisteredStudents.txt", strRegStudents, function (err) {
+		  if (err) throw err;
+		});
+		// Adding student to classes if any were added
+		var strRegClasses = fs.readFileSync(dataFolderName+"/data/RegisteredClasses.txt");
+	 	var jsonRegClasses = JSON.parse(strRegClasses);
+
+		for (let i = 0; i< datapacket.classes.length; i++){
+			var classData = jsonRegClasses[datapacket.classes[i]]
+			if (classData){
+				classData.studentids.push(studentData.id);
+			}
+		}
+
+		strRegClasses = JSON.stringify(jsonRegClasses);
+
+		fs.writeFileSync(dataFolderName +"/data" + "/RegisteredClasses.txt", strRegClasses, function (err) {
+			if (err) throw err;
+		});
+
+		console.log(datapacket.name+' created new student: '+datapacket.studentname);
+	}else{
+
+		console.log('could not find data for: '+datapacket.name);
+	}
+}
+function createClassData(datapacket){
+	/* Datapacket format
+	{
+		name: string,
+		className: string,
+		addedStudents: [int studnetid,int studentid...],
+	}
+	classes can be empty
+	*/
+	datapacket = decodeURIComponent(datapacket);
+	datapacket = JSON.parse(datapacket);
+	let dataFolderName = 	 __dirname+"/data"+"/"+datapacket.name;
+	if (fs.existsSync(dataFolderName+"/data/RegisteredClasses.txt")){
+		var strRegStudents = fs.readFileSync(dataFolderName+"/data/RegisteredStudents.txt");
+	 	var jsonRegStudents = JSON.parse(strRegStudents);
+
+		var strRegClasses = fs.readFileSync(dataFolderName+"/data/RegisteredClasses.txt");
+		var jsonRegClasses = JSON.parse(strRegClasses);
+		if (jsonRegClasses.length >= maximumClassesPerUser){
+			return({result: "failure", msg: "Too many classes"});
+		}
+		var classData = {
+			name: datapacket.classname,
+			studentids: datapacket.addedStudents,
+			classid: jsonRegClasses.length
+		}
+		// Adding nestedClassData to students who were added to the class
+		for (let i = 0; i< datapacket.addedStudents.length; i++){
+			var studentData = jsonRegStudents[datapacket.addedStudents[i]];
+			var nestedClassData = {
+				classid: classData.classid,
+				emojis: []
+			}
+			studentData.classes.push(nestedClassData);
+		}
+		jsonRegClasses.push(classData);
+		// Saving New Student Directory Data
+		strRegStudents = JSON.stringify(jsonRegStudents);
+		fs.writeFileSync(dataFolderName +"/data" + "/RegisteredStudents.txt", strRegStudents, function (err) {
+		  if (err) throw err;
+		});
+
+		strRegClasses = JSON.stringify(jsonRegClasses);
+		fs.writeFileSync(dataFolderName +"/data" + "/RegisteredClasses.txt", strRegClasses, function (err) {
+			if (err) throw err;
+		});
+
+		console.log(datapacket.name+' created new class: '+datapacket.classname);
+	}else{
+
+		console.log('could not find data for: '+datapacket.name);
+	}
+}
+
+/*
+var testNewStudentDataPacket = {
+	name: "dude",
+	studentname: "Robby Guu",
+	classes: [0],
+}
+var testNewClassDataPacket = {
+	name: "dude",
+	classname: "Cool Class",
+	addedStudents: [1],
+}
+createNewUserData('dude');
+createStudentData(JSON.stringify(testNewStudentDataPacket));
+createClassData(JSON.stringify(testNewClassDataPacket));*/
+
 function runAPIRequest(apiRequest){
 	console.log("received: " + apiRequest);
 	if (apiRequest.substring(0,18) ==="createNewUserData-"){
 		return(createNewUserData(apiRequest.substring(18,apiRequest.length)));
+	}
+	if (apiRequest.substring(0,21) ==="createNewStudentData-"){
+		return(createStudentData(apiRequest.substring(21,apiRequest.length)));
+	}
+	if (apiRequest.substring(0,19) ==="createNewClassData-"){
+		return(createStudentData(apiRequest.substring(19,apiRequest.length)));
 	}
 	if (apiRequest.substring(0,19) ==="pushEmojiToStudent-"){
 		return(giveStudentEmoji(apiRequest.substring(19,apiRequest.length)));
@@ -128,9 +273,9 @@ function runAPIRequest(apiRequest){
 var server = http.createServer(function(req, res){
   console.log("Request was made: " + req.url);
   //API Check, responseData always JSON
-  if (req.url.substring(1,4) === "api"){
+	if (req.url.substring(1,4) === 'api'){
     var responseData = runAPIRequest((req.url.substring(5,req.url.length)));
-		res.writeHead(200,{"Content-Type": "text/plain"});
+		res.writeHead(200,{'Content-Type': 'text/plain'});
 		res.write(JSON.stringify(responseData));
 		res.end();
   }
