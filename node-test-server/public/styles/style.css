@@ -1578,8 +1578,18 @@ h2 {
 	z-index: 10;
 }
 #teachericon{
-	width: 128px;
+	width: 75%;
+
 }
 #loggedin{
 	display: none;
+}
+img {
+  border-radius: 50%;
+}
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
 }

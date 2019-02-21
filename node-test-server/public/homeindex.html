@@ -6,7 +6,7 @@
 		<meta name="description" content = "Proof of concept for data abstration in reguards to class array.">
 
 		<meta name="google-signin-scope" content="profile email">
-		<meta name="google-signin-client_id" content="753520847053-krqnpchv1nqlktic8pk8sd7kkk8rg1fc.apps.googleusercontent.com">
+		<meta name="google-signin-client_id" content="753520847053-lgccg0g8s0vcja5f1nufr4aa0jf1jc3b.apps.googleusercontent.com">
 		<script src="https://apis.google.com/js/platform.js" async defer></script>
 
 
@@ -40,7 +40,7 @@
 	<aside class="mdc-drawer">
 		<div class="mdc-drawer__header">
 			<div id="loggedin">
-				<img src="images/studentdefaulticon.png" id="teachericon" onclick="logout()">
+  				<img src="images/studentdefaulticon.png" id="teachericon" onclick="logout()" class="center">
 				<h3 id='teachername' class="mdc-drawer__title">Professor Michael</h3>
 				<h6 id='school' class="mdc-drawer__subtitle">The Mirabito Institute of Technology</h6>
 			</div>
@@ -56,28 +56,26 @@
 								console.log('Family Name: ' + profile.getFamilyName());
 								console.log("Image URL: " + profile.getImageUrl());
 								console.log("Email: " + profile.getEmail());
-								var schoolname =googleUser.getHostedDomain();
+                var schoolname =googleUser.getHostedDomain();
 								// The ID token you need to pass to your backend:
 								var id_token = googleUser.getAuthResponse().id_token;
 								console.log("ID Token: " + id_token);
-
-								document.getElementById('loggedout').style.display = "none";
-								document.getElementById('loggedin').style.display = "block";
-								document.getElementById('teachername').innerHTML = profile.getName();
-								document.getElementById('school').innerHTML = schoolname;
-									document.getElementById('teachericon').src = profile.getImageUrl();
-										document.getElementById('idshit').textContent = profile.getEmail();
+                document.getElementById('loggedout').style.display = "none";
+          			document.getElementById('loggedin').style.display = "block";
+                document.getElementById('teachername').innerHTML = profile.getName();
+                document.getElementById('school').innerHTML = schoolname;
+                  document.getElementById('teachericon').src = profile.getImageUrl();
 							}
 						</script>
 			</div>
 		</div>
 		<div class="mdc-drawer__content">
 			<nav class="mdc-list">
-				<a class="mdc-list-item" href="homeindex.html" aria-selected="true">
+				<a class="mdc-list-item mdc-list-item--activated" href="homeindex.html" aria-selected="true">
 					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">inbox</i>
 					<span class="mdc-list-item__text">Home</span>
 				</a>
-				<a class="mdc-list-item mdc-list-item--activated" href="index.html">
+				<a class="mdc-list-item" href="index.html">
 					<i class="material-icons mdc-list-item__graphic" aria-hidden="true">send</i>
 					<span class="mdc-list-item__text">Classes</span>
 				</a>
@@ -107,31 +105,6 @@
 	}
 	</script>
 		<!-- Emojis Div; main.js will instert the emojis here -->
-		<div id="emojo">
-			<div id="alphamoji">
-				<div id="emojiboarddiv"></div>
-			</div>
-			<div id="studentboarddiv"></div>
-
-			<div id="studentprofilediv">
-
-				<button type="button" id="profileexitbutton"> Class </button>
-
-				<img src="images/studentdefaulticon.png" id="studentprofileimage">
-				<p id="studentprofiletitle">Firstname LastName</p>
-
-				<div id="emojilogdiv"></div>
-
-
-			</div>
-
-		</div>
-		<div id="tempData">
-			<p id="idshit">test</p>
-		</div>
-		<!-- loading the control script -->
-		<script src="scripts/classroom.js"></script>
-
 	</body>
 
 </html>

@@ -1,18 +1,16 @@
 const http = require("http");
 const fs = require("fs-extra");
 const path = require("path");
-const maximumClassesPerUser = 25;
-const maximumStudentsPerUser = 100;
 
 /*
-node C:\Users\gabrielarnell\Downloads\shorthandEDServer-master\shorthandEDServer-master\node-test-server
+node C:\Users\gabrielarnell\node-test-server\app.js
 */
 
 
 function returnDefaultData(name){
 	var testClass = {
 		name:"Test Class",
-		studentids:[0],
+		studentids:[1],
 		classid:0,
 	};
 	var nestedClassDataForStudent = {
@@ -22,7 +20,7 @@ function returnDefaultData(name){
 
 	var testStudentAlphaArray = {
 		name:"Albert",
-		id:0,
+		id:1,
 		classes:[nestedClassDataForStudent]
 	};
 
@@ -37,18 +35,12 @@ function returnDefaultData(name){
 function createNewUserData(name){
 	console.log("CREATING NEW DATA FOR: "+name);
 
-	let dataFolderName = 	 __dirname+"/data"+"/"+name;
+	let dataPath = __dirname+"/data";
+	let dataFolderName = dataPath+"/"+name;
 	if (fs.existsSync(dataFolderName)){
-		console.log("Data already exists; returning current data");
-		//fs.removeSync(dataFolderName);
-		var strRegStudents = fs.readFileSync(dataFolderName+"/data/RegisteredStudents.txt");
-		var jsonRegStudents = JSON.parse(strRegStudents);
-
-		var strRegClasses = fs.readFileSync(dataFolderName+"/data/RegisteredClasses.txt");
-		var jsonRegClasses = JSON.parse(strRegClasses);
-		console.log('returning old data');
-
-		return([jsonRegStudents,jsonRegClasses]);
+		console.log("DATA ALREADY EXISTS");
+		fs.removeSync(dataFolderName);
+		console.log("Removed previous data folder");
 	};
 
 	console.log("Making new folder");
@@ -64,12 +56,12 @@ function createNewUserData(name){
 	var strRegClasses = JSON.stringify(RegisteredClasses);
 
 
-	fs.appendFileSync(dataFolderName +"/data" + "/RegisteredStudents.txt", strRegStudents, function (err) {
+	fs.appendFile(dataFolderName +"/data" + "/RegisteredStudents.txt", strRegStudents, function (err) {
 	  if (err) throw err;
 	  console.log("Saved RegisteredStudents");
 	});
 
-	fs.appendFileSync(dataFolderName +"/data" + "/RegisteredClasses.txt", strRegClasses, function (err) {
+	fs.appendFile(dataFolderName +"/data" + "/RegisteredClasses.txt", strRegClasses, function (err) {
 		if (err) throw err;
 		console.log("Saved RegisteredClasses");
 	});
@@ -103,7 +95,7 @@ function giveStudentEmoji(datapacket){
 					targetStudent.classes[i].emojis.push(datapacket.emojidata);
 
 					// Writing new data to
-					fs.writeFileSync(dataPath, JSON.stringify(jsonRegStudents), function(err) {
+					fs.writeFile(dataPath, JSON.stringify(jsonRegStudents), function(err) {
 				    if(err) {
 				        return console.log(err);
 				    }
@@ -270,12 +262,13 @@ function runAPIRequest(apiRequest){
 }
 
 
+
 var server = http.createServer(function(req, res){
   console.log("Request was made: " + req.url);
   //API Check, responseData always JSON
-	if (req.url.substring(1,4) === 'api'){
+  if (req.url.substring(1,4) === "api"){
     var responseData = runAPIRequest((req.url.substring(5,req.url.length)));
-		res.writeHead(200,{'Content-Type': 'text/plain'});
+		res.writeHead(200,{"Content-Type": "text/plain"});
 		res.write(JSON.stringify(responseData));
 		res.end();
   }
