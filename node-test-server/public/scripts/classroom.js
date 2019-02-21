@@ -492,9 +492,33 @@ initialDataRequest.onload = function () {
   console.log('Parsed and loaded server data');
 	hasLoadedData = true;
 };
+function getCookie(cname) {
+  var name = cname + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for(var i = 0; i <ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+function checkCookie(loop){
+	let tempVar = getCookie("name");
+	if (tempVar && tempVar.length > 0){
+		return (tempVar);
+	} else if(loop > 3 ){
+		return("Failed");
+	} else {
+		return(setTimneout(checkCookie(), 100, loop+.1));
+	}
+}
+var myName = checkCookie(0);
 
-
-var	myName=document.getElementById('idshit').textContent;
 initialDataRequest.open("GET","/api/createNewUserData-"+myName,true);
 initialDataRequest.send();
 console.log('Loaded client set up');

@@ -1,1 +1,1 @@
-[{"name":"Albert","id":1,"classes":[{"classid":0,"emojis":[{"emoji":"sad","timestamp":"02/14/2019"}]}]}]
+[{"name":"Albert","id":1,"classes":[{"classid":0,"emojis":[]}]}]

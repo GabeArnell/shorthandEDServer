@@ -35,12 +35,18 @@ function returnDefaultData(name){
 function createNewUserData(name){
 	console.log("CREATING NEW DATA FOR: "+name);
 
-	let dataPath = __dirname+"/data";
-	let dataFolderName = dataPath+"/"+name;
+	let dataFolderName = 	 __dirname+"/data"+"/"+name;
 	if (fs.existsSync(dataFolderName)){
-		console.log("DATA ALREADY EXISTS");
-		fs.removeSync(dataFolderName);
-		console.log("Removed previous data folder");
+		console.log("Data already exists; returning current data");
+		//fs.removeSync(dataFolderName);
+		var strRegStudents = fs.readFileSync(dataFolderName+"/data/RegisteredStudents.txt");
+		var jsonRegStudents = JSON.parse(strRegStudents);
+
+		var strRegClasses = fs.readFileSync(dataFolderName+"/data/RegisteredClasses.txt");
+		var jsonRegClasses = JSON.parse(strRegClasses);
+		console.log('returning old data');
+
+		return([jsonRegStudents,jsonRegClasses]);
 	};
 
 	console.log("Making new folder");
@@ -56,12 +62,12 @@ function createNewUserData(name){
 	var strRegClasses = JSON.stringify(RegisteredClasses);
 
 
-	fs.appendFile(dataFolderName +"/data" + "/RegisteredStudents.txt", strRegStudents, function (err) {
+	fs.appendFileSync(dataFolderName +"/data" + "/RegisteredStudents.txt", strRegStudents, function (err) {
 	  if (err) throw err;
 	  console.log("Saved RegisteredStudents");
 	});
 
-	fs.appendFile(dataFolderName +"/data" + "/RegisteredClasses.txt", strRegClasses, function (err) {
+	fs.appendFileSync(dataFolderName +"/data" + "/RegisteredClasses.txt", strRegClasses, function (err) {
 		if (err) throw err;
 		console.log("Saved RegisteredClasses");
 	});
