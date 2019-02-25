@@ -542,7 +542,7 @@ addStudentButton.onclick = function(){
 		var datapacket = {
 			name: myName,
 			studentname: newStudentName,
-			classes: [currentClassId],
+			classes: [currentClassId]
 		}
 		initialDataRequest.open("GET","/api/createNewStudentData-"+JSON.stringify(datapacket),true);
 		initialDataRequest.send();
