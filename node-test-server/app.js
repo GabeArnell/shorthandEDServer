@@ -8,9 +8,10 @@ node C:\Users\gabrielarnell\node-test-server\app.js
 
 
 function returnDefaultData(name){
+	/*
 	var testClass = {
 		name:"Test Class",
-		studentids:[1],
+		studentids:[],
 		classid:0,
 	};
 	var nestedClassDataForStudent = {
@@ -22,10 +23,10 @@ function returnDefaultData(name){
 		name:"Albert",
 		id:1,
 		classes:[nestedClassDataForStudent]
-	};
+	};*/
 
-	let RegisteredStudents = [testStudentAlphaArray];
-	let RegisteredClasses = [testClass];
+	let RegisteredStudents = [];
+	let RegisteredClasses = [];
 
 	return([RegisteredStudents, RegisteredClasses]);
 }
@@ -258,7 +259,7 @@ createStudentData(JSON.stringify(testNewStudentDataPacket));
 createClassData(JSON.stringify(testNewClassDataPacket));*/
 //createStudentData(JSON.stringify(testNewStudentDataPacket));
 function runAPIRequest(apiRequest){
-	console.log("received: " + apiRequest);
+	console.log("received api req");
 	if (apiRequest.substring(0,18) ==="createNewUserData-"){
 		return(createNewUserData(apiRequest.substring(18,apiRequest.length)));
 	}
