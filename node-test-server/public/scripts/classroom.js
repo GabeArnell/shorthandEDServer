@@ -494,16 +494,15 @@ function loadClass(){
 }
 
 var initialDataRequest = new XMLHttpRequest();
+currentClassId = 0;
 initialDataRequest.onload = function () {
   // Begin accessing JSON data here
   let responseData = JSON.parse(this.response);
 	RegisteredStudents = (responseData[0]);
 	RegisteredClasses = responseData[1];
 	console.log(RegisteredClasses);
-	currentClassId = 0;
-	if (responseData[3]) != null){
-		currentClassId = responseData[3];
-	}
+
+
   loadClass();
   console.log('Parsed and loaded server data');
 	hasLoadedData = true;
