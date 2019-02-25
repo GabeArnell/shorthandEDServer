@@ -183,6 +183,7 @@ var newdata = datap.split("+");
 		});
 
 		console.log(datapacket.name+' created new student: '+datapacket.studentname);
+		return([jsonRegStudents,jsonRegClasses]);
 	}else{
 
 		console.log('could not find data for: '+datapacket.name);
@@ -242,13 +243,13 @@ function createClassData(datapacket){
 	}
 }
 
-
+/*
 var testNewStudentDataPacket = {
 	name: "101444500244575304742",
 	studentname: "Robby Guu",
 	classes: [0],
 }
-/*
+
 var testNewClassDataPacket = {
 	name: "dude",
 	classname: "Cool Class",
