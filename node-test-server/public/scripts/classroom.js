@@ -27,7 +27,6 @@ var studenttilesize = "125";
 var studenttilepadding = "40";
 
 
-var verticalRowShift "200";
 var maxStudentsPerRow = 6;
 
 
