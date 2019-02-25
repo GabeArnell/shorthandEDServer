@@ -23,8 +23,8 @@ var emojitilesize = "80";
 var emojitilepadding = "10";
 
 // Student Tile Properties
-var studenttilesize = "150";
-var studenttilepadding = "20";
+var studenttilesize = "125";
+var studenttilepadding = "40";
 
 var mousePosition;
 
@@ -276,7 +276,7 @@ function loadClass(currentClassId){
 
 			// Adding icons for each student
 			for (let i = 0; i < currentStudents.length; i++){
-
+				let studenticonCard =document.createElement('div');
 				let studentIcon = document.createElement('div');
 
 				// setting properties
@@ -284,7 +284,8 @@ function loadClass(currentClassId){
 				studentIcon.style.height = studenttilesize+"px";
 				studentIcon.style.position = "absolute";
 				studentIcon.style.borderRadius = '50%';
-
+				studentIcon.style.top= '16px';
+				studentIcon.style.left = '10px';
 				studentIcon.style.zIndex = '1';
 
 
@@ -295,13 +296,20 @@ function loadClass(currentClassId){
 				studentIcon.style.backgroundSize = studenttilesize+'px '+studenttilesize+'px';
 
 				// Adding name label
-				/*var namelabel = document.createElement('p')
+				var namelabel = document.createElement('h1')
 				namelabel.innerHTML = currentStudents[i].name;
 
-				studentIcon.appendChild(namelabel);*/
-
+				studenticonCard.appendChild(namelabel);
+				namelabel.style.position = 'relative';
+				namelabel.style.paddingLeft = "44px";
+				namelabel.style.paddingTop = "150px"
+				studenticonCard.className="mdc-card";
+				studenticonCard.style.height="200px";
+				studenticonCard.style.width="148px";
+				studenticonCard.style.position = 'absolute';
 				// Adding div to the student board and pushing it to current array
-				divStudentBoard.appendChild(studentIcon);
+				studenticonCard.appendChild(studentIcon);
+				divStudentBoard.appendChild(studenticonCard);
 				console.log("Added "+currentStudents[i].name+"'s tile");
 				currentStudentIcons.push(studentIcon);
 
@@ -316,8 +324,10 @@ function loadClass(currentClassId){
 				snapDiv.style.backgroundColor = "red";
 				snapDiv.style.zIndex = "3";
 				snapDiv.style.opacity = "0";
+				snapDiv.style.top = '16px';
+				snapDiv.style.left = '10px';
 
-				divStudentBoard.appendChild(snapDiv);
+				studenticonCard.appendChild(snapDiv);
 
 				// Adding properties
 				studentIcon.mousehover = false;
@@ -332,8 +342,8 @@ function loadClass(currentClassId){
 				}, true);
 
 				// Moving the icons to be a list
-				studentIcon.style.left = ((studenttilesize)*i+(i*studenttilepadding)+(studenttilepadding/2))+'px';
-				snapDiv.style.left = ((studenttilesize)*i+(i*studenttilepadding)+(studenttilepadding/2))+'px';
+
+				studenticonCard.style.left = ((studenttilesize)*i+(i*studenttilepadding)+(studenttilepadding/2))+'px';
 
 				snapDiv.addEventListener('mousedown', function(event) {
 					loadStudentProfileUI(studentIcon.student,currentClassId);
@@ -514,11 +524,24 @@ function checkCookie(loop){
 	} else if(loop > 3 ){
 		return("Failed");
 	} else {
-		return(setTimneout(checkCookie(), 100, loop+.1));
+		return(setTimeout(checkCookie(), 100, loop+.1));
 	}
 }
 var myName = checkCookie(0);
+var buttonshit = document.getElementById('newbutton');
+buttonshit.onclick = function(){
 
+	var person = prompt("Please enter student name", "Sexy Gabe");
+
+	if (person != null) {
+		person = person + "+" +myName;
+	initialDataRequest.open("GET","/api/createNewStudentData-"+person,true);
+initialDataRequest.send();
+location.reload();
+
+	}
+}
 initialDataRequest.open("GET","/api/createNewUserData-"+myName,true);
 initialDataRequest.send();
+
 console.log('Loaded client set up');

@@ -120,7 +120,7 @@ function giveStudentEmoji(datapacket){
 
 }
 
-function createStudentData(datapacket){
+function createStudentData(datap){
 	/* Datapacket format
 	{
 		name: string,
@@ -129,15 +129,20 @@ function createStudentData(datapacket){
 	}
 	classes can be empty
 	*/
+var newdata = datap.split("+");
+	var datapaco = {
+		name: newdata[1],
+		studentname: newdata[0],
+		classes: [0],
+	}
+	var datapacket= JSON.stringify(datapaco);
 	datapacket = decodeURIComponent(datapacket);
 	datapacket = JSON.parse(datapacket);
 	let dataFolderName = 	 __dirname+"/data"+"/"+datapacket.name;
 	if (fs.existsSync(dataFolderName+"/data/RegisteredStudents.txt")){
 		var strRegStudents = fs.readFileSync(dataFolderName+"/data/RegisteredStudents.txt");
 	 	var jsonRegStudents = JSON.parse(strRegStudents);
-		if (jsonRegClasses.length >= maximumClassesPerUser){
-			return({result: "failure", msg: "Too many students"});
-		}
+		console.log(jsonRegStudents);
 		var studentData = {
 			name: datapacket.studentname,
 			id: jsonRegStudents.length,
@@ -236,12 +241,13 @@ function createClassData(datapacket){
 	}
 }
 
-/*
+
 var testNewStudentDataPacket = {
-	name: "dude",
+	name: "101444500244575304742",
 	studentname: "Robby Guu",
 	classes: [0],
 }
+/*
 var testNewClassDataPacket = {
 	name: "dude",
 	classname: "Cool Class",
@@ -250,7 +256,7 @@ var testNewClassDataPacket = {
 createNewUserData('dude');
 createStudentData(JSON.stringify(testNewStudentDataPacket));
 createClassData(JSON.stringify(testNewClassDataPacket));*/
-
+//createStudentData(JSON.stringify(testNewStudentDataPacket));
 function runAPIRequest(apiRequest){
 	console.log("received: " + apiRequest);
 	if (apiRequest.substring(0,18) ==="createNewUserData-"){
@@ -274,9 +280,12 @@ var server = http.createServer(function(req, res){
   //API Check, responseData always JSON
   if (req.url.substring(1,4) === "api"){
     var responseData = runAPIRequest((req.url.substring(5,req.url.length)));
+		console.log(responseData);
+		if (responseData){
 		res.writeHead(200,{"Content-Type": "text/plain"});
 		res.write(JSON.stringify(responseData));
 		res.end();
+	}
   }
 
   // Returning static web pages/files
@@ -284,7 +293,7 @@ var server = http.createServer(function(req, res){
   switch (req.url) {
     case "/":
       res.writeHead(200,{"Content-Type": "text/html"});
-      fs.createReadStream(__dirname + "/public/index.html").pipe(res);
+      fs.createReadStream(__dirname + "/public/homeindex.html").pipe(res);
       break
     case "/favicon.ico":
       res.writeHead(200,{"Content-Type": "image/x-icon"});
@@ -307,7 +316,7 @@ var server = http.createServer(function(req, res){
         }
       }else{
         res.writeHead(404,{"Content-Type": "text/html"});
-        fs.createReadStream(__dirname + "/public/index.html").pipe(res);
+        fs.createReadStream(__dirname + "/public/homeindex.html").pipe(res);
       }
 
   }

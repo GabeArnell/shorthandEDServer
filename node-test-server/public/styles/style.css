@@ -1569,7 +1569,7 @@ h2 {
 #studentboarddiv {
   position: absolute;
   width: 100%;
-  height: 90%;
+  height: 77%;
   top: 144px; }
 
 #emojo {
@@ -1578,7 +1578,7 @@ h2 {
 	z-index: 10;
 }
 #teachericon{
-	width: 75%;
+	width: 60%;
 
 }
 #loggedin{
@@ -1592,4 +1592,7 @@ img {
   margin-left: auto;
   margin-right: auto;
   width: 50%;
+}
+#maindrawer{
+  padding-top: 75px;
 }

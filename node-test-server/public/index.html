@@ -37,7 +37,7 @@
 			</section>
 		</div>
 	</header>
-	<aside class="mdc-drawer">
+	<aside class="mdc-drawer" id="maindrawer">
 		<div class="mdc-drawer__header">
 			<div id="loggedin">
 				<img src="images/studentdefaulticon.png" id="teachericon" onclick="logout()">
@@ -69,6 +69,7 @@
 									var cookievalue = escape(profile.getId())+";";
 										document.cookie = "name="+cookievalue;
 										console.log(cookievalue);
+
 							}
 						</script>
 			</div>
@@ -104,6 +105,15 @@
 		localStorage.setItem('logged', "no")
 		document.getElementById('loggedout').style.display = "block";
 		document.getElementById('loggedin').style.display = "none";
+
+
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+    });
+
+		location.reload();
+
 		alert("logged out")
 
 	}
@@ -128,6 +138,10 @@
 			</div>
 
 		</div>
+		<button class="mdc-fab mdc-fab--extended" style="top:500px; position:fixed; left:80%;" id='newbutton'>
+	  <span class="material-icons mdc-fab__icon">add</span>
+	  <span class="mdc-fab__label">Create Student</span>
+	</button>
 		<div id="tempData">
 			<p id="idshit">test</p>
 		</div>
