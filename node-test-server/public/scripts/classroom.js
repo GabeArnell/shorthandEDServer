@@ -200,8 +200,8 @@ function createStudentData(name,givenClassId){
 
 
 // LOADS IN THE CLASSES
-var currentClassId = 0
-
+var currentClassId = 0;
+var emojismade = 0;
 function loadClass(){
 
 
@@ -213,12 +213,7 @@ function loadClass(){
 			divStudentBoard.removeChild(child);
 		}
 	}
-	for (let i =0;i<divEmojiBoard.length;i++){
-		let child = divEmojiBoard[i];
-		if (child){
-			divEmojiBoard.removeChild(child);
-		}
-	}
+	divEmojiBoard.innerHTML = "";
 
 	console.log('Loading new class.');
 
