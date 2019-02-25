@@ -26,6 +26,11 @@ var emojitilepadding = "10";
 var studenttilesize = "125";
 var studenttilepadding = "40";
 
+
+var verticalRowShift "200";
+var maxStudentsPerRow = 6;
+
+
 var mousePosition;
 
 // Temporary Variables
@@ -48,7 +53,6 @@ function loadEmojiLog(student,classid,contentElement,date,displaytype,){
 	let classArray;
 
 	// identifying which class is the emoji
-	console.log(student.classes.length);
 	for (let i = 0; i < student.classes.length;i++){
 		let itteratingClassArray = student.classes[i];
 		if (itteratingClassArray.classid == classid) {
@@ -166,38 +170,6 @@ studentProfileExitButton.addEventListener('mousedown', function(e) {
 }, true);
 
 
-// Function to create student data NOT BEING USED,
-function createStudentData(name,givenClassId){
-	// givenClassId is the id of the class the student profile was created for
-	console.log('Creating '+name+"'s data");
-	var newStudentData = {
-		name: name,
-		id: (RegisteredStudents.length+1),
-		classes: [],
-	};
-	if (givenClassId != null){
-		// If give created in a class screen, the students data will have the class data
-		let newClassData = {
-			classid: givenClassId,
-			emojis: [],
-		};
-		newStudentData.classes.push(newClassData);
-
-		// Adding the students id to the class dataset
-		for (let i =0;i <RegisteredClasses.length;i++){
-			if (RegisteredClasses[i].classid == givenClassId){
-				RegisteredClasses[i].studentids.push(newStudentData.id);
-			}
-		}
-	}
-	RegisteredStudents.push(newStudentData);
-}
-
-// Adding new student
-//createStudentData("Bert",1);
-
-
-
 
 // LOADS IN THE CLASSES
 var currentClassId = 0;
@@ -215,7 +187,7 @@ function loadClass(){
 	}
 	divEmojiBoard.innerHTML = "";
 
-	console.log('Loading new class.');
+	console.log('Loading class');
 
 
 	// Loading student icons
@@ -272,14 +244,17 @@ function loadClass(){
 			console.log(currentStudents.length+" student(s) in class");
 
 			// Adding icons for each student
+			var studentTileTick = -1
+			var row = 0;
 			for (let i = 0; i < currentStudents.length; i++){
 				let studenticonCard =document.createElement('div');
 				let studentIcon = document.createElement('div');
-
+				studentTileTick = studentTileTick + 1
+				if (studentTileTick == maxStudentsPerRow){
+					studentTileTick = 0
+					row = row +1;
+				}
 				// setting properties
-				studentIcon.style.width = studenttilesize+"px";
-				studentIcon.style.height = studenttilesize+"px";
-				studentIcon.style.position = "absolute";
 				studentIcon.style.borderRadius = '50%';
 				studentIcon.style.top= '16px';
 				studentIcon.style.left = '10px';
@@ -299,7 +274,7 @@ function loadClass(){
 				studenticonCard.appendChild(namelabel);
 				namelabel.style.position = 'relative';
 				namelabel.style.paddingLeft = "44px";
-				namelabel.style.paddingTop = "150px"
+				namelabel.style.paddingTop = (row*220)+150+"px";
 				studenticonCard.className="mdc-card";
 				studenticonCard.style.height="200px";
 				studenticonCard.style.width="148px";
