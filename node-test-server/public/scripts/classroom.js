@@ -200,7 +200,9 @@ function createStudentData(name,givenClassId){
 
 
 // LOADS IN THE CLASSES
-function loadClass(currentClassId){
+var currentClassId = 0
+
+function loadClass(){
 
 
 	console.log('Deleting previous elements');
@@ -498,7 +500,11 @@ initialDataRequest.onload = function () {
 	RegisteredStudents = (responseData[0]);
 	RegisteredClasses = responseData[1];
 	console.log(RegisteredClasses);
-  loadClass(0);
+	currentClassId = 0;
+	if (responseData[3]) != null){
+		currentClassId = responseData[3];
+	}
+  loadClass();
   console.log('Parsed and loaded server data');
 	hasLoadedData = true;
 };
@@ -528,16 +534,20 @@ function checkCookie(loop){
 	}
 }
 var myName = checkCookie(0);
-var buttonshit = document.getElementById('newbutton');
-buttonshit.onclick = function(){
+var addStudentButton = document.getElementById('newbutton');
+addStudentButton.onclick = function(){
 
-	var person = prompt("Please enter student name", "Sexy Gabe");
+	var newStudentName = prompt("Please enter student name", "Student");
 
-	if (person != null) {
-		person = person + "+" +myName;
-	initialDataRequest.open("GET","/api/createNewStudentData-"+person,true);
-initialDataRequest.send();
-location.reload();
+	if (newStudentName != null) {
+		var datapacket = {
+			name: myName,
+			studentname: newStudentName,
+			classes: [currentClassId];
+		}
+		initialDataRequest.open("GET","/api/createNewStudentData-"+JSON.stringify(datapacket),true);
+		initialDataRequest.send();
+		//location.reload();
 
 	}
 }
