@@ -539,12 +539,8 @@ addStudentButton.onclick = function(){
 	var newStudentName = prompt("Please enter student name", "Student");
 
 	if (newStudentName != null) {
-		var datapacket = {
-			name: myName,
-			studentname: newStudentName,
-			classes: [currentClassId]
-		}
-		initialDataRequest.open("GET","/api/createNewStudentData-"+JSON.stringify(datapacket),true);
+		newStudentName = newStudentName + "+"+ myName;
+		initialDataRequest.open("GET","/api/createNewStudentData-"+newStudentName,true);
 		initialDataRequest.send();
 		//location.reload();
 
